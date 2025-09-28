@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e563561e08b6a3642a487177f5cfbb37, type: 3}
+  m_Name: AudioManifest
+  m_EditorClassIdentifier: 
+  Data:
+  - {fileID: 8993587613876751859}
+  - {fileID: 6202555720882677371}
+  identity: {fileID: 8993587613876751859}
+  QuickAccess: 0
+--- !u!114 &6202555720882677371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17d1008b78cb6e846889b7778282fbef, type: 3}
+  m_Name: AssetBundleDefinitions
+  m_EditorClassIdentifier: 
+  StagingPaths: []
+  assetBundles:
+  - assetBundleName: Audio
+    assets:
+    - {fileID: 11400000, guid: 72e8fab1f2071164b9c300bc25cbd280, type: 2}
+    - {fileID: 8300000, guid: b59b1b0f3068c75498efe62f4a613736, type: 3}
+    - {fileID: 8300000, guid: 09ee38a05fa19cf45a78444a7fc4eec3, type: 3}
+    - {fileID: 8300000, guid: cc2fbb8bb64abdb4db39c832eb0d2506, type: 3}
+--- !u!114 &8993587613876751859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f22bb7fd1d3b56a48bc52f8e407901d6, type: 3}
+  m_Name: ManifestIdentity
+  m_EditorClassIdentifier: 
+  StagingPaths: []
+  Author: Violet
+  Name: Audio
+  Description: Uh Aether void Audio
+  Version: rn 1.0.0
+  Dependencies: []
