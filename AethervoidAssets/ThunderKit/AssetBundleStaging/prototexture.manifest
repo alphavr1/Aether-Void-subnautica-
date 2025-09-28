@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 3152084404
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 4ebc1595b8ac244bbb69db25fb00fb8a
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7859cd501ea75098bcf7e53f1b477c26
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Precursor_computer_terminal_illum.png
+- Assets/tiles1_Maze4_Emissive.png
+- Assets/tiles3_Maze2_Emissive.tga
+- Assets/tiles4_Maze1_Emissive.tga
+Dependencies: []

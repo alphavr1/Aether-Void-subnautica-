@@ -1,0 +1,65 @@
+ManifestFileVersion: 0
+CRC: 3157033800
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 22b77cc65f1f9d09bb31d3607bd3b19e
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b5ad67ce23b3efe80874ce2e426a4e12
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 2035726501, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: 421098305, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: -1699601541, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: -1278680321, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: 15018958, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: -953714136, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: 815910612, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: -862842168, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+- Class: 114
+  Script: {fileID: 695924059, guid: 5d86a00cc505f8349b001173c08b11c9, type: 3}
+- Class: 114
+  Script: {fileID: 770227681, guid: 5d86a00cc505f8349b001173c08b11c9, type: 3}
+- Class: 114
+  Script: {fileID: -1029836452, guid: 5d86a00cc505f8349b001173c08b11c9, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Placeholder.wav
+- Assets/Cube.prefab
+- Assets/place holder vehicle.prefab
+- Assets/place holder vehicle.fbx
+- Assets/PlaceHolder.asset
+- Assets/Overclock.mp3
+- Assets/Placeholdermusic.asset
+Dependencies: []
