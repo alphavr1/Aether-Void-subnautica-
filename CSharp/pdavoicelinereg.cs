@@ -1,4 +1,4 @@
-﻿using FMOD;
+using FMOD;
 using FMODUnity;
 using Nautilus.Extensions;
 using Nautilus.FMod;
@@ -52,6 +52,20 @@ namespace Violet.Testbiome
 
                 var fmodAssetplaceholder = Nautilus.Utility.AudioUtils.GetFmodAsset("Placeholder");
 
+                IFModSoundBuilder eventBuilder3 = builder.CreateNewEvent(
+                    "Finaly a voice actor",
+                    "bus:/master/SFX_for_pause" // <-- Make sure this bus exists
+                );
+
+                eventBuilder.SetSound("Finaly a voice actor")
+                    .SetFadeDuration(0.5f)
+                    .SetMode2D(false);
+
+                // Register it so FMOD recognizes it
+                eventBuilder.Register();
+
+                var fmodAssetGooberman = Nautilus.Utility.AudioUtils.GetFmodAsset("Finaly a voice actor");
+
 
 
 
@@ -64,7 +78,7 @@ namespace Violet.Testbiome
                 PDAHandler.AddLogEntry(
                     "AetherVoidgooberman",  // Unique key here
                     "AetherVoidgooberman",  // Matching language key
-                   fmodAssetplaceholder,
+                   fmodAssetGooberman,
                    mySprite
                 );
 
