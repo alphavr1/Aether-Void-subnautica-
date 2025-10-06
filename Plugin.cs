@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Nautilus.Handlers;
@@ -22,6 +22,7 @@ namespace Testbiome
     [BepInDependency("com.snmodding.nautilus",BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("Esper89.TerrainPatcher")]
     [BepInDependency("com.prototech.prototypesub", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.aotu.architectslibrary",BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.indigocoder.sublibrary",BepInDependency.DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin
     {
@@ -40,7 +41,9 @@ namespace Testbiome
         public static AssetBundle AudioBundle { get; private set; }
         public static AssetBundle SubBundle { get; private set; }
         public static AssetBundle MeshBundle { get; private set; }
+        public static AssetBundle ItemMeshBundle { get; private set; }
         public static AssetBundle TextureBundle { get; private set; }
+
         private static WorldObjectTitleAddon objectAddon;
         private static WorldObjectTitleAddon objectAddon1;
         private static WorldObjectTitleAddon objectAddon2;
@@ -108,6 +111,18 @@ namespace Testbiome
                 Logger.LogInfo($"TextureBundle contains: {assetName}");
             }
 
+            string ItemMeshBundlePath = Path.Combine(AssetsFolderPath, "item mesh");
+            ItemMeshBundle = AssetBundle.LoadFromFile(ItemMeshBundlePath);
+            if (ItemMeshBundle == null)
+            {
+                Logger.LogError($"Failed to load ItemMeshBundle from {ItemMeshBundlePath}");
+                return; // Stop if bundle load fails
+            }
+            foreach (var assetName in ItemMeshBundle.GetAllAssetNames())
+            {
+                Logger.LogInfo($"ItemMeshBundle contains: {assetName}");
+            }
+
 
             // Fmod stuff
 
@@ -119,8 +134,11 @@ namespace Testbiome
             // Create and register biome spawning coroutine
             CustomBiome.RegisterCustomBiome();
             CustomBiome.RegisterCustomBiome2();
+            Items.Registeritem1();
+            TryFindPiracy();
             var spawner = new SpawnBiomes();
             spawner.StartSpawnCoroutine(this);
+
 
             // Register sky prefab fix (example, ensure this doesn't depend on bundles if it uses them)
             var skyPrefabFixer = BiomeUtils.CreateSkyPrefab("SkyDeepGrandReef", null, true, true);
