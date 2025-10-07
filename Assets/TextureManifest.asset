@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e563561e08b6a3642a487177f5cfbb37, type: 3}
+  m_Name: TextureManifest
+  m_EditorClassIdentifier: 
+  Data:
+  - {fileID: 8993587613876751859}
+  - {fileID: 6202555720882677371}
+  identity: {fileID: 8993587613876751859}
+  QuickAccess: 0
+--- !u!114 &6202555720882677371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17d1008b78cb6e846889b7778282fbef, type: 3}
+  m_Name: AssetBundleDefinitions
+  m_EditorClassIdentifier: 
+  StagingPaths: []
+  assetBundles:
+  - assetBundleName: Texture
+    assets:
+    - {fileID: 2800000, guid: 91335b3ae82f04d409887d59fbb0b931, type: 3}
+    - {fileID: 2800000, guid: 617adda3a203f9a4fba8c2b5a75f44f6, type: 3}
+    - {fileID: 2800000, guid: 8f1bbc42597fc0547a32dc981ffceee6, type: 3}
+    - {fileID: 2800000, guid: dc3de0877a5ea4b46be2be1c5bc99f46, type: 3}
+    - {fileID: 2800000, guid: 088e1fe80e7af8449a05daf551e1d1ce, type: 3}
+    - {fileID: 2800000, guid: 3abfc13963a39aa4cad19f1c1e327be7, type: 3}
+--- !u!114 &8993587613876751859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f22bb7fd1d3b56a48bc52f8e407901d6, type: 3}
+  m_Name: ManifestIdentity
+  m_EditorClassIdentifier: 
+  StagingPaths: []
+  Author: Violet
+  Name: Textures
+  Description: Uh Aether void Textures
+  Version: rn 1.0.0
+  Dependencies: []
