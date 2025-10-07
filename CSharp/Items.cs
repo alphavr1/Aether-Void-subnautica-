@@ -1,19 +1,17 @@
-using Microsoft.Win32;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
-using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
+using Nautilus.Extensions;
+using Nautilus.FMod;
+using Nautilus.FMod.Interfaces;
 using Nautilus.Handlers;
 using Nautilus.Utility;
-using Oculus.Platform;
 using Story;
 using System.Collections.Generic;
 using System.Reflection;
 using Testbiome;
 using UnityEngine;
 using Violet.Testbiome;
-using static ICSharpCode.SharpZipLib.Zip.Compression.DeflaterHuffman;
-using static uGUI_TabbedControlsPanel;
 using Plugin = Testbiome.Plugin;
 
 namespace Violet.Testbiome
@@ -27,8 +25,26 @@ namespace Violet.Testbiome
 
             // Texture/Spites
             Sprite Cloudniteoreicon = Plugin.TextureBundle.LoadAsset<Sprite>("Cloud Nite Ore Icon");
+            Sprite Swiftericon = Plugin.TextureBundle.LoadAsset<Sprite>("Swifter Icon");
             Sprite Cloudniteoredatapop = Plugin.TextureBundle.LoadAsset<Sprite>("databank-popup-Cloudnite");
             Texture2D Cloudniteoredatabank = Plugin.TextureBundle.LoadAsset<Texture2D>("databank-image-Cloudnite");
+            var bundleSource = new AssetBundleSoundSource(Plugin.AudioBundle);
+            FModSoundBuilder builder = new FModSoundBuilder(bundleSource);
+
+            IFModSoundBuilder Swiftercloudnitebuilder = builder.CreateNewEvent(
+                    "SwifterCloudnite",
+                    "bus:/master/SFX_for_pause" // <-- Make sure this bus exists
+                );
+
+            Swiftercloudnitebuilder.SetSound("SwifterCloudnite")
+                .SetFadeDuration(0.5f)
+                .SetMode2D(false);
+
+            // Register it so FMOD recognizes it
+            Swiftercloudnitebuilder.Register();
+
+            var fmodAssetSwiftercloudnite = Nautilus.Utility.AudioUtils.GetFmodAsset("SwifterCloudnite");
+
 
             if (bundle == null)
             {
@@ -107,11 +123,18 @@ namespace Violet.Testbiome
 
             //Register Item Goal for unlocking when picked up
             StoryGoalHandler.RegisterItemGoal(
-    key: "UnlockCloudNite",
-    goalType: Story.GoalType.Encyclopedia,
-    techType: info.TechType,
-    delay: 0f
-);
+            key: "UnlockCloudNite",
+            goalType: Story.GoalType.Encyclopedia,
+            techType: info.TechType,
+            delay: 20f
+            );
+
+            StoryGoalHandler.RegisterItemGoal(
+            key: "UnlockCloudNite",
+            goalType: Story.GoalType.PDA,
+            techType: info.TechType,
+            delay: 0f
+               );
 
             // Specify what happens when the goal unlocks (unlock blueprint)
             StoryGoalHandler.RegisterOnGoalUnlockData(
@@ -130,12 +153,27 @@ namespace Violet.Testbiome
                     "UnlockCloudNite",
                     "Advanced",
                     "Cloud Nite Resourse",
-                    "This Ore is extremely light weight and durable you can probably use it for light weight submarines",
+                    "This Ore is extremely light weight and durable you can probably use it for light weight submarines,Becomes white in light",
                     Cloudniteoredatabank,
                     Cloudniteoredatapop,
                     PDAHandler.UnlockBasic,
                     null
                 );
+
+            PDAHandler.AddLogEntry(
+                    "UnlockCloudNite",  // Unique key here
+                    "UnlockCloudNite",  // Matching language key
+                   fmodAssetSwiftercloudnite,
+                   Swiftericon
+                );
+
+            LanguageHandler.SetLanguageLine(
+                    "UnlockCloudNite",
+                    "<delay=0>Oh hey look at that! you found cloudnite you will need that how ever i might have used almost all of it so...<delay=1000>my bad... but dont worry! i made a synthetic version of it!<delay=1000> <delay=1000> Here il send it over.<delay=2000>Corrupted Blueprint data found attempting recovery.<delay=1000> well thats not going to recover here il try agai-<delay=1000> Recovery success huh... Storing Blueprint in PDA <delay=1000> well i guess i have to take back my words...<delay=1000> Oh by the way my name is Swifter but you can call me Swift.",
+                    "English"
+                );
+
+
 
             //Forced spawn in the world
             var cloudniteSpawnLocation = new Vector3(1385.5f, -128.3f, -1393.1f);
