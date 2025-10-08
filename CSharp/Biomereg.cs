@@ -10,7 +10,7 @@ namespace Violet.Testbiome
     {
         public static void RegisterCustomBiome()
         {
-            // Create biome settings with your desired parameters
+            // Create biome settings with desired parameters
             var biomeSettings = BiomeUtils.CreateBiomeSettings(
                 new Vector3(100f, 18.3f, 3.53f), // absorption
                 1f,                              // scattering
@@ -24,7 +24,7 @@ namespace Violet.Testbiome
                 24f                              
             );
 
-            // Create the sky prefab using the provided reflection texture
+            // Create the sky prefab
             var skyReference = new BiomeHandler.SkyReference("SkyGrandReef");
 
             BiomeHandler.RegisterBiome("AetherVoidsurface", biomeSettings, skyReference);
@@ -38,7 +38,7 @@ namespace Violet.Testbiome
 
         public static void RegisterCustomBiome2()
         {
-            // Create biome settings with your desired parameters
+            // Create biome settings with desired parameters
             var biomeSettings = BiomeUtils.CreateBiomeSettings(
                 new Vector3(100f, 18.3f, 3.53f), // absorption
                 1f,                              // scattering
@@ -52,7 +52,7 @@ namespace Violet.Testbiome
                 24f                              // temperature
             );
 
-            // Create the sky prefab using the provided reflection texture
+            // Create the sky prefab
             var skyReference = new BiomeHandler.SkyReference("SkyDeepGrandReef");
 
             BiomeHandler.RegisterBiome("AetherVoid", biomeSettings, skyReference);
@@ -68,3 +68,4 @@ namespace Violet.Testbiome
         }
     }
   }
+
