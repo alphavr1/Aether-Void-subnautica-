@@ -51,7 +51,7 @@ namespace Violet.Testbiome
             PrefabInfo volumePrefabInfo = PrefabInfo.WithTechType("AetherVoidSurfaceCubeVolume");
             CustomPrefab volumePrefab = new CustomPrefab(volumePrefabInfo);
 
-            // Atmosphere volume linked to your custom biome "AtherVoid"
+            // Atmosphere volume linked to "AtherVoidSurface"
             AtmosphereVolumeTemplate volumeTemplate = new AtmosphereVolumeTemplate(
                 volumePrefabInfo,
                 AtmosphereVolumeTemplate.VolumeShape.Cube,
@@ -61,7 +61,7 @@ namespace Violet.Testbiome
             volumePrefab.SetGameObject(volumeTemplate);
             volumePrefab.Register();
 
-            // Place the biome in the world at your coordinates
+            // Place the biome in the world at coordinates
             CoordinatedSpawnsHandler.RegisterCoordinatedSpawn(
                 new SpawnInfo(volumePrefabInfo.ClassID,
                               new Vector3(1311.1f, -50f, -1361f),
@@ -82,7 +82,7 @@ namespace Violet.Testbiome
             PrefabInfo volumePrefabInfo = PrefabInfo.WithTechType("AetherVoidCubeVolume");
             CustomPrefab volumePrefab = new CustomPrefab(volumePrefabInfo);
 
-            // Atmosphere volume linked to your custom biome "AtherVoid"
+            // Atmosphere volume linked to "AtherVoid"
             AtmosphereVolumeTemplate volumeTemplate = new AtmosphereVolumeTemplate(
                 volumePrefabInfo,
                 AtmosphereVolumeTemplate.VolumeShape.Cube,
@@ -92,7 +92,7 @@ namespace Violet.Testbiome
             volumePrefab.SetGameObject(volumeTemplate);
             volumePrefab.Register();
 
-            // Place the biome in the world at your coordinates
+            // Place the biome in the world at coordinates
             CoordinatedSpawnsHandler.RegisterCoordinatedSpawn(
                 new SpawnInfo(volumePrefabInfo.ClassID,
                               new Vector3(1311.1f, -1500f, -1361f),
@@ -109,6 +109,7 @@ namespace Violet.Testbiome
 
 
 }
+
 
 
 
