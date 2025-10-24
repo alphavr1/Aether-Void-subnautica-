@@ -1,15 +1,11 @@
-using FMOD;
-using FMODUnity;
 using Nautilus.Extensions;
 using Nautilus.FMod;
 using Nautilus.FMod.Interfaces;
 using Nautilus.Handlers;
-using System.Threading.Tasks;
-using Testbiome;
+using AV;
 using UnityEngine;
-using static Nautilus.Utility.AudioUtils;
 
-namespace Violet.Testbiome
+namespace Violet.AV
 {
     internal class pdavoicelinereg
     {
@@ -22,47 +18,42 @@ namespace Violet.Testbiome
                 var bundleSource = new AssetBundleSoundSource(Plugin.AudioBundle);
                 FModSoundBuilder builder = new FModSoundBuilder(bundleSource);
 
-                // Create the event
                 IFModSoundBuilder eventBuilder = builder.CreateNewEvent(
                     "Warning_Dimension_St_855pdavoiceline",
-                    "bus:/master/SFX_for_pause/PDA_pause/all/SFX" // <-- Make sure this bus exists
+                    "bus:/master/SFX_for_pause/PDA_pause/all/SFX"
                 );
 
                 eventBuilder.SetSound("Warning_Dimension_St_855pdavoiceline")
                     .SetFadeDuration(0.5f)
                     .SetMode2D(false);
 
-                // Register it so FMOD recognizes it
                 eventBuilder.Register();
 
                 var fmodAsset = Nautilus.Utility.AudioUtils.GetFmodAsset("Warning_Dimension_St_855pdavoiceline");
 
-                // Create the event
                 IFModSoundBuilder eventBuilder2 = builder.CreateNewEvent(
                     "Placeholder",
-                    "bus:/master/SFX_for_pause" // <-- Make sure this bus exists
+                    "bus:/master/SFX_for_pause"
                 );
 
-                eventBuilder.SetSound("Placeholder")
+                eventBuilder2.SetSound("Placeholder")
                     .SetFadeDuration(0.5f)
                     .SetMode2D(false);
 
-                // Register it so FMOD recognizes it
-                eventBuilder.Register();
+                eventBuilder2.Register();
 
                 var fmodAssetplaceholder = Nautilus.Utility.AudioUtils.GetFmodAsset("Placeholder");
 
                 IFModSoundBuilder eventBuilder3 = builder.CreateNewEvent(
                     "Finaly a voice actor",
-                    "bus:/master/SFX_for_pause" // <-- Make sure this bus exists
+                    "bus:/master/SFX_for_pause"
                 );
 
-                eventBuilder.SetSound("Finaly a voice actor")
+                eventBuilder3.SetSound("Finaly a voice actor")
                     .SetFadeDuration(0.5f)
                     .SetMode2D(false);
 
-                // Register it so FMOD recognizes it
-                eventBuilder.Register();
+                eventBuilder3.Register();
 
                 var fmodAssetGooberman = Nautilus.Utility.AudioUtils.GetFmodAsset("Finaly a voice actor");
 
@@ -70,21 +61,21 @@ namespace Violet.Testbiome
 
 
                 PDAHandler.AddLogEntry(
-                    "AetherVoidWarning",  // Unique key here
-                    "AetherVoidWarning",  // Matching language key
+                    "AetherVoidWarning",
+                    "AetherVoidWarning",
                    fmodAsset
                 );
 
                 PDAHandler.AddLogEntry(
-                    "AetherVoidgooberman",  // Unique key here
-                    "AetherVoidgooberman",  // Matching language key
+                    "AetherVoidgooberman",
+                    "AetherVoidgooberman",
                    fmodAssetGooberman,
                    mySprite
                 );
 
                 PDAHandler.AddEncyclopediaEntry(
                     "AetherVoidSurfaceData",
-                    "PlanetaryGeology",                    // Use this as per docs
+                    "PlanetaryGeology",
                     "Potential Dimension Breach Location South",
                     "This biome seems to be completely cutoff from the Crater Edge, a dimensional breach might be possible with the right equipment",
                     null, null,
@@ -122,8 +113,8 @@ namespace Violet.Testbiome
                 );
 
                 StoryGoalHandler.RegisterBiomeGoal(
-                "AetherVoidSurfaceData",   // unique goal key
-                Story.GoalType.Encyclopedia,   // this is to unlock PDA databank
+                "AetherVoidSurfaceData",
+                Story.GoalType.Encyclopedia,
                 biomeName: "AetherVoidsurface",
                 minStayDuration: 3f,
                 delay: 9f
