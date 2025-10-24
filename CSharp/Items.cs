@@ -1,7 +1,6 @@
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Crafting;
-using Nautilus.Extensions;
 using Nautilus.FMod;
 using Nautilus.FMod.Interfaces;
 using Nautilus.Handlers;
@@ -9,18 +8,19 @@ using Nautilus.Utility;
 using Story;
 using System.Collections.Generic;
 using System.Reflection;
-using Testbiome;
 using UnityEngine;
-using Violet.Testbiome;
-using Plugin = Testbiome.Plugin;
+using Plugin = AV.Plugin;
 
-namespace Violet.Testbiome
+namespace Violet.AV
 {
     public static class Items
     {
+        public static TechType IonPolymer;
+        public static TechType Cloudnite;
+
+
         public static void Registeritem1()
         {
-            // Grab bundle from Plugin.cs
             AssetBundle bundle = Plugin.ItemMeshBundle;
 
             // Texture/Spites
@@ -33,14 +33,14 @@ namespace Violet.Testbiome
 
             IFModSoundBuilder Swiftercloudnitebuilder = builder.CreateNewEvent(
                     "SwifterCloudnite",
-                    "bus:/master/SFX_for_pause" // <-- Make sure this bus exists
+                    "bus:/master/SFX_for_pause"
                 );
 
             Swiftercloudnitebuilder.SetSound("SwifterCloudnite")
                 .SetFadeDuration(0.5f)
                 .SetMode2D(false);
 
-            // Register it so FMOD recognizes it
+
             Swiftercloudnitebuilder.Register();
 
             var fmodAssetSwiftercloudnite = Nautilus.Utility.AudioUtils.GetFmodAsset("SwifterCloudnite");
@@ -52,7 +52,6 @@ namespace Violet.Testbiome
                 return;
             }
 
-            //Create PrefabInfo
             var info = PrefabInfo.WithTechType(
                 classId: "OreCloudNite",
                 displayName: "Cloud Nite",
@@ -64,25 +63,16 @@ namespace Violet.Testbiome
             .WithIcon(Cloudniteoreicon)
             .WithSizeInInventory(new Vector2int(1, 1));
 
-            //Create prefab
             CustomPrefab prefab = new CustomPrefab(info);
 
             prefab.SetGameObject(() =>
             {
-                GameObject prefabModel = bundle.LoadAsset<GameObject>("cloudniteoreprefab");
-                if (prefabModel == null)
-                {
-                    Debug.LogError("Could not find Cloudnite prefab in bundle!");
-                    return null;
-                }
+                GameObject obj = GameObject.Instantiate(bundle.LoadAsset<GameObject>("cloudniteoreprefab"));
 
-                GameObject obj = GameObject.Instantiate(prefabModel);
-
-                // Add Nautilus components
                 PrefabUtils.AddBasicComponents(obj, info.ClassID, info.TechType, LargeWorldEntity.CellLevel.Near);
                 obj.EnsureComponent<Pickupable>();
 
-
+                PrefabUtils.AddVFXFabricating(obj, null, -0.2f, 0.2f, new Vector3(0f, -0.05f, 0f));
 
                 return obj;
             });
@@ -109,7 +99,6 @@ namespace Violet.Testbiome
 
 
 
-            //Add to fab crafting tree
             CraftTreeHandler.AddCraftingNode(
                 CraftTree.Type.Fabricator,
                 info.TechType,
@@ -117,11 +106,13 @@ namespace Violet.Testbiome
                 "AdvancedMaterials"
             );
 
-            //Register prefab
+            prefab.SetPdaGroupCategoryAfter(TechGroup.Personal, TechCategory.AdvancedMaterials, TechType.Titanium);
+
+
             prefab.Register();
+            Cloudnite = info.TechType;
+            
 
-
-            //Register Item Goal for unlocking when picked up
             StoryGoalHandler.RegisterItemGoal(
             key: "UnlockCloudNite",
             goalType: Story.GoalType.Encyclopedia,
@@ -136,7 +127,6 @@ namespace Violet.Testbiome
             delay: 0f
                );
 
-            // Specify what happens when the goal unlocks (unlock blueprint)
             StoryGoalHandler.RegisterOnGoalUnlockData(
                 goal: "UnlockCloudNite",
                 blueprints: new UnlockBlueprintData[]
@@ -161,8 +151,8 @@ namespace Violet.Testbiome
                 );
 
             PDAHandler.AddLogEntry(
-                    "UnlockCloudNite",  // Unique key here
-                    "UnlockCloudNite",  // Matching language key
+                    "UnlockCloudNite",
+                    "UnlockCloudNite",
                    fmodAssetSwiftercloudnite,
                    Swiftericon
                 );
@@ -175,7 +165,6 @@ namespace Violet.Testbiome
 
 
 
-            //Forced spawn in the world
             var cloudniteSpawnLocation = new Vector3(1385.5f, -128.3f, -1393.1f);
             var cloudniteSpawnRotation = new Vector3(-90f, 0f, 0f);
             var cloudniteSpawnSize = new Vector3(14f, 14f, 14f);
@@ -184,6 +173,134 @@ namespace Violet.Testbiome
             CoordinatedSpawnsHandler.RegisterCoordinatedSpawnsForOneTechType(info.TechType, spawn);
 
             Plugin.Log.LogInfo("Cloud Nite Ore registered and unlock goal set correctly.");
+        }
+
+        public static void Registeritem2()
+        {
+          
+            
+            AssetBundle bundle = Plugin.ItemMeshBundle;
+
+            // Texture/Spites
+            Sprite IonPolymericon = Plugin.TextureBundle.LoadAsset<Sprite>("IonPolymerIcon");  
+            Sprite IonPolymerdatapop = Plugin.TextureBundle.LoadAsset<Sprite>("IonPolymerPopup");
+            Texture2D IonPolymerdatabank = Plugin.TextureBundle.LoadAsset<Texture2D>("IonPolymerdatabankency");
+
+            if (bundle == null)
+            {
+                Debug.LogError("ItemMeshBundle is not loaded!");
+                return;
+            }
+
+            var info = PrefabInfo.WithTechType(
+                classId: "IonPolymer",
+                displayName: "Ion Polymer",
+                description: "A Alien Strong Alternitive To Synthetic Fibers",
+                language: "English",
+                unlockAtStart: false,
+                techTypeOwner: Assembly.GetExecutingAssembly()
+            )
+            .WithIcon(IonPolymericon)
+            .WithSizeInInventory(new Vector2int(2, 1));
+
+            CustomPrefab prefab = new CustomPrefab(info);
+
+            prefab.SetGameObject(() =>
+            {
+                GameObject obj = GameObject.Instantiate(bundle.LoadAsset<GameObject>("Ionpolomerprefab"));
+
+                PrefabUtils.AddBasicComponents(obj, info.ClassID, info.TechType, LargeWorldEntity.CellLevel.Near);
+                obj.EnsureComponent<Pickupable>();
+
+                MaterialUtils.ApplySNShaders(obj);
+
+                var rend = obj.GetComponent<MeshRenderer>();
+                rend.material = MaterialUtils.IonCubeMaterial;
+
+
+                PrefabUtils.AddVFXFabricating(obj, null, -0.2f, 0.2f, new Vector3(0f, -0.05f, 0f));
+
+                return obj;
+            });
+
+
+
+
+            var IonPolymerRecipe = new RecipeData()
+            {
+                craftAmount = 1,
+                Ingredients = new List<Ingredient>
+                {
+                    new Ingredient(TechType.PrecursorIonCrystal, 1),
+                    new Ingredient(TechType.Diamond, 1),
+                    new Ingredient(TechType.FiberMesh, 1)
+
+                }
+                
+
+            };
+
+            prefab.SetRecipe(IonPolymerRecipe);
+            
+
+
+
+
+            CraftTreeHandler.AddCraftingNode(
+                CraftTree.Type.Workbench,
+                
+            info.TechType
+            );
+
+            prefab.SetPdaGroupCategoryAfter(TechGroup.Personal, TechCategory.AdvancedMaterials, TechType.Titanium);
+
+
+
+            prefab.Register();
+            IonPolymer = info.TechType;
+            
+
+            StoryGoalHandler.RegisterItemGoal(
+            key: "UnlockIonPolymer",
+            goalType: Story.GoalType.Encyclopedia,
+            techType: info.TechType,
+            delay: 2f
+            );
+  
+
+            StoryGoalHandler.RegisterOnGoalUnlockData(
+                goal: "UnlockIonPolymer",
+                blueprints: new UnlockBlueprintData[]
+                {
+        new UnlockBlueprintData()
+        {
+            techType = info.TechType,
+            unlockType = UnlockBlueprintData.UnlockType.Available
+        }
+                }
+            );
+
+            PDAHandler.AddEncyclopediaEntry(
+                    "UnlockIonPolymer",
+                    "Advanced",
+                    "Ion Polymer",
+                    "This Strange Polymer Is 10 Times Stronger Then Synthetic Fibers And Has A Strange Texture And Feel To It And Glows Green, Recommened To Study This Material.",
+                    IonPolymerdatabank,
+                    IonPolymerdatapop,
+                    PDAHandler.UnlockBasic,
+                    null
+                );
+
+
+
+            var IonPolymerSpawnLocation = new Vector3(-194.4f, -389.2f, 1230.2f);
+            var IonPolymerSpawnRotation = new Vector3(0f, 37f, 90f);
+            var IonPolymerSpawnSize = new Vector3(13f, 13f, 11.27659f);
+
+            SpawnLocation spawn = new SpawnLocation(IonPolymerSpawnLocation, IonPolymerSpawnRotation, IonPolymerSpawnSize);
+            CoordinatedSpawnsHandler.RegisterCoordinatedSpawnsForOneTechType(info.TechType, spawn);
+
+            Plugin.Log.LogInfo("Ion Polymer registered");
         }
     }
 }
