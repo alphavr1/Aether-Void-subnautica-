@@ -1,5 +1,13 @@
 Aether Void is my subnautica mod based around going down in to the depth of the void going to diffrent dimentions to find out more to the story
 
+Currently Planned 
+
+1| Finishing the sub
+2| Adding more facilitys
+3| Making more custom tools
+4| Finishing the Dimentions
+5| Adding custom fabricators for the submarine and items
+
 
 Thank you to the people below and there reasons
 
