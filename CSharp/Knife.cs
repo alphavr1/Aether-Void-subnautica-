@@ -21,9 +21,9 @@ namespace Violet.AV
 
 
 
-        static AssetBundle ItemMeshbundle = Plugin.ItemMeshBundle;
-        static AssetBundle Knifemeshbundle = Plugin.KnifeMeshBundle;
+        static readonly AssetBundle ItemMeshbundle = Plugin.ItemMeshBundle;
         public static AssetBundle bundle = null;
+        public static bool Hasregistedknife = false;
 
 
         public static class CrystalKnife
@@ -46,6 +46,7 @@ namespace Violet.AV
                     .WithFabricatorType(CraftTree.Type.Workbench);
                 CrystalKnife.SetPdaGroupCategoryAfter(TechGroup.Personal, TechCategory.Tools, TechType.Knife);
                 CrystalKnife.Register();
+                Hasregistedknife = true;
             }
 
             private static void ModifyPrefab(GameObject prefab)
@@ -56,7 +57,7 @@ namespace Violet.AV
 
                 
 
-                var newModel = Object.Instantiate(Plugin.KnifeMeshBundle.LoadAsset<GameObject>("AetherVoidknife"), prefab.transform);
+                var newModel = Object.Instantiate(Plugin.ItemMeshBundle.LoadAsset<GameObject>("AetherVoidknife"), prefab.transform);
                 newModel.transform.localPosition = new Vector3(0.15f, -0.05f, 0f);
                 newModel.transform.localEulerAngles = new Vector3(-85,0,0);
                 MaterialUtils.ApplySNShaders(newModel);
@@ -81,7 +82,7 @@ namespace Violet.AV
                 newKnifeComponent.damageType = oldKnifeComponent.damageType;
                 newKnifeComponent.damage = 60;
                 newKnifeComponent.crystaldamage = 60;
-                newKnifeComponent.attackDist = 12;
+                newKnifeComponent.attackDist = 5;
                 newKnifeComponent.vfxEventType = VFXEventTypes.knife;
                 newKnifeComponent.mainCollider = oldKnifeComponent.mainCollider;
                 newKnifeComponent.drawSound = oldKnifeComponent.drawSound;
