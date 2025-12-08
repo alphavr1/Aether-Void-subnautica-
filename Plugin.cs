@@ -5,6 +5,7 @@ using Nautilus.Handlers;
 using Nautilus.Handlers.TitleScreen;
 using Nautilus.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -17,7 +18,7 @@ namespace AV
     [BepInPlugin(GUID, pluginName, versionString)]
     [BepInDependency("com.snmodding.nautilus",BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("Esper89.TerrainPatcher")]
-    [BepInDependency("com.prototech.prototypesub", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.prototech.prototypesub", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.aotu.architectslibrary",BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.indigocoder.sublibrary",BepInDependency.DependencyFlags.HardDependency)]
     public class Plugin : BaseUnityPlugin
@@ -31,16 +32,14 @@ namespace AV
         private static readonly Harmony Harmony = new Harmony(GUID);
         public static ManualLogSource Log;
 
+        //Config Bools/needed stuff
         public static bool useknifebundle = true;
-
-
         internal static Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
         public static string AssetsFolderPath { get; } = Path.Combine(Path.GetDirectoryName(Assembly.Location), "Assets");
         public static AssetBundle AudioBundle { get; private set; }
         public static AssetBundle SubBundle { get; private set; }
-        public static AssetBundle MeshBundle { get; private set; }
+        public static AssetBundle TitleBundle { get; private set; }
         public static AssetBundle ItemMeshBundle { get; private set; }
-        public static AssetBundle KnifeMeshBundle { get; private set; }
         public static AssetBundle TextureBundle { get; private set; }
 
         private static WorldObjectTitleAddon objectAddon;
@@ -58,103 +57,32 @@ namespace AV
 
             Logger.LogInfo($"{pluginName} {versionString} loaded.");
             Log = Logger;
- 
 
-            string audioBundlePath = Path.Combine(AssetsFolderPath, "audio");
-            AudioBundle = AssetBundle.LoadFromFile(audioBundlePath);
-            if (AudioBundle == null)
-            {
-                Logger.LogError($"Failed to load AudioBundle from {audioBundlePath}");
-                return;
-            }
-            foreach (var assetName in AudioBundle.GetAllAssetNames())
-            {
-                Logger.LogInfo($"AudioBundle contains: {assetName}");
-            }
+            string TitleBundlePath = Path.Combine(AssetsFolderPath, "titleassets");
+            TitleBundle = AssetBundle.LoadFromFile(TitleBundlePath);
 
-            string meshBundlePath = Path.Combine(AssetsFolderPath, "mesh");
-            MeshBundle = AssetBundle.LoadFromFile(meshBundlePath);
-            if (MeshBundle == null)
+            foreach (var assetName in TitleBundle.GetAllAssetNames())
             {
-                Logger.LogError($"Failed to load MeshBundle from {meshBundlePath}");
-                return;
-            }
-            foreach (var assetName in MeshBundle.GetAllAssetNames())
-            {
-                Logger.LogInfo($"MeshBundle contains: {assetName}");
-            }
-
-            string SubBundlePath = Path.Combine(AssetsFolderPath, "aethersub");
-            SubBundle = AssetBundle.LoadFromFile(SubBundlePath);
-            if (SubBundle == null)
-            {
-                Logger.LogError($"Failed to load SubBundle from {SubBundlePath}");
-                return;
-            }
-            foreach (var assetName in SubBundle.GetAllAssetNames())
-            {
-                Logger.LogInfo($"SubBundle contains: {assetName}");
-            }
-
-            string TextureBundlePath = Path.Combine(AssetsFolderPath, "texture");
-            TextureBundle = AssetBundle.LoadFromFile(TextureBundlePath);
-            if (TextureBundle == null)
-            {
-                Logger.LogError($"Failed to load TextureBundle from {TextureBundlePath}");
-                return;
-            }
-            foreach (var assetName in TextureBundle.GetAllAssetNames())
-            {
-                Logger.LogInfo($"TextureBundle contains: {assetName}");
-            }
-
-            string ItemMeshBundlePath = Path.Combine(AssetsFolderPath, "item mesh");
-            ItemMeshBundle = AssetBundle.LoadFromFile(ItemMeshBundlePath);
-            if (ItemMeshBundle == null)
-            {
-                Logger.LogError($"Failed to load ItemMeshBundle from {ItemMeshBundlePath}");
-                return;
-            }
-            foreach (var assetName in ItemMeshBundle.GetAllAssetNames())
-            {
-                Logger.LogInfo($"KnifeMeshBundle contains: {assetName}");
-            }
-            string KnifeMeshBundlePath = Path.Combine(AssetsFolderPath, "knife mesh");
-            KnifeMeshBundle = AssetBundle.LoadFromFile(KnifeMeshBundlePath);
-            if (KnifeMeshBundle == null)
-            {
-                Logger.LogError($"Failed to load KnifeMeshBundle from {KnifeMeshBundlePath}");
-                return;
-            }
-            foreach (var assetName in KnifeMeshBundle.GetAllAssetNames())
-            {
-                Logger.LogInfo($"ItemMeshBundle contains: {assetName}");
+                Logger.LogInfo($"Title contains: {assetName}");
             }
 
             // Anti Piracy
-
             TryFindPiracy();
 
+            //Load And Spawn
+
+            WaitScreenHandler.RegisterEarlyAsyncLoadTask("Aether Void", LoadAudioAssets, "Loading Audio From AssetBundels");
+            WaitScreenHandler.RegisterEarlyAsyncLoadTask("Aether Void", LoadItemandmeshAssets, "Loading Mesh And Items From AssetBundels");
+            WaitScreenHandler.RegisterEarlyAsyncLoadTask("Aether Void", LoadTextureAssets, "Loading Textures From AssetBundels");
+            WaitScreenHandler.RegisterEarlyAsyncLoadTask("Aether Void", LoadSubAssets, "Loading Aethr Submarine From AssetBundels");
+            WaitScreenHandler.RegisterAsyncLoadTask("Aether Void", RegisterAudio, "Registering Audio");
+            WaitScreenHandler.RegisterAsyncLoadTask("Aether Void", RegisterItemsAndFacilitys, "Registering Items And Facilitys");
+            //WaitScreenHandler.RegisterAsyncLoadTask("Aether Void", RegisterAethr, "Registering Aethr Submarine");
+            WaitScreenHandler.RegisterAsyncLoadTask("Aether Void", RegisterAssets, "Registering The Rest Of The Assets Like Biomes");
 
 
-
-
-
-            //register PDA voice lines
-            pdavoicelinereg.AetherVoidBiomePDA.Register();
-
-            // Create and register biome spawning coroutine
-            Biomereg.RegisterCustomBiome();
-            Biomereg.RegisterCustomBiome2();
-            Biomereg.RegisterCustomBiome3();
-            StartCoroutine(subreg.RegisterSubmarine());
-            FacilitySpawner.Patch();
-            Items.Registeritem1();
-            Items.Registeritem2();
-            Violet.AV.CrystalKnifeClass.CrystalKnife.Register();
-            var spawner = new spawnbiomes();
-            spawner.StartSpawnCoroutine(this);
-
+            
+            
 
 
             var skyPrefabFixer = BiomeUtils.CreateSkyPrefab("SkyDeepGrandReef", null, true, true);
@@ -176,6 +104,98 @@ namespace AV
             TitleScreenHandler.RegisterTitleScreenObject("Aether Void", theme);
 
         }
+
+        private IEnumerator RegisterAssets(WaitScreenHandler.WaitScreenTask task)
+        {
+            var spawner = new spawnbiomes();
+            spawner.StartSpawnCoroutine(this);
+
+            yield return new WaitUntil(() => spawner.aethervoidSpawned && spawner.aethervoidsurfaceSpawned == true);
+        }
+
+        private IEnumerator RegisterItemsAndFacilitys(WaitScreenHandler.WaitScreenTask task)
+        {
+            Biomereg.RegisterCustomBiome();
+            Biomereg.RegisterCustomBiome2();
+            Items.Registeritem1();
+            Items.Registeritem2();
+            Items.Registerprecursorkey();
+            FacilitySpawner.Aetherkeytunlocktrigger();
+            FacilitySpawner.Patch();
+            
+            Violet.AV.CrystalKnifeClass.CrystalKnife.Register();
+
+            yield return new WaitUntil(() => Biomereg.hasregisteredbiome1 && Biomereg.hasregisteredbiome2 && CrystalKnifeClass.Hasregistedknife == true);
+
+        }
+
+        private IEnumerator RegisterAudio(WaitScreenHandler.WaitScreenTask task)
+        {
+            pdavoicelinereg.AetherVoidBiomePDA.Register();
+            databanks.data.Register();
+
+            yield return new WaitUntil(() => pdavoicelinereg.AetherVoidBiomePDA.isdoneregistering && databanks.data.isdoneregistering == true);
+        }
+
+        private IEnumerator RegisterAethr(WaitScreenHandler.WaitScreenTask task)
+        {
+            subreg.RegisterSubmarine();
+
+            yield return new WaitUntil(() => subreg.hasregisted == true);
+        }
+
+        private IEnumerator LoadItemandmeshAssets(WaitScreenHandler.WaitScreenTask task)
+        {
+            string ItemTitleBundlePath = Path.Combine(AssetsFolderPath, "item mesh");
+            ItemMeshBundle = AssetBundle.LoadFromFile(ItemTitleBundlePath);
+              
+            
+            foreach (var assetName in ItemMeshBundle.GetAllAssetNames())
+            {
+                Logger.LogInfo($"KnifeTitleBundle contains: {assetName}");
+            }
+
+            yield return new WaitUntil(() => ItemMeshBundle != null);
+
+        }
+
+        private IEnumerator LoadAudioAssets(WaitScreenHandler.WaitScreenTask task)
+        {
+            string audioBundlePath = Path.Combine(AssetsFolderPath, "audio");
+            AudioBundle = AssetBundle.LoadFromFile(audioBundlePath);
+              yield return new WaitUntil(() => AudioBundle != null);
+            
+            foreach (var assetName in AudioBundle.GetAllAssetNames())
+            {
+                Logger.LogInfo($"AudioBundle contains: {assetName}");
+            }
+        }
+
+        private IEnumerator LoadTextureAssets(WaitScreenHandler.WaitScreenTask task)
+        {
+            string TextureBundlePath = Path.Combine(AssetsFolderPath, "texture");
+            TextureBundle = AssetBundle.LoadFromFile(TextureBundlePath);
+            yield return new WaitUntil(() => TextureBundle != null);
+
+            foreach (var assetName in TextureBundle.GetAllAssetNames())
+            {
+                Logger.LogInfo($"TextureBundle contains: {assetName}");
+            }
+
+        }
+
+        private IEnumerator LoadSubAssets(WaitScreenHandler.WaitScreenTask task)
+        {
+            string SubBundlePath = Path.Combine(AssetsFolderPath, "aethersub");
+            SubBundle = AssetBundle.LoadFromFile(SubBundlePath);
+            yield return new WaitUntil(() => SubBundle != null);
+
+            foreach (var assetName in SubBundle.GetAllAssetNames())
+            {
+                Logger.LogInfo($"SubBundle contains: {assetName}");
+            }
+
+        } 
 
         public static bool TryFindPiracy()
         {
@@ -200,7 +220,7 @@ namespace AV
 
         private MusicTitleAddon GetMusicAddon()
         {
-            var sound = AudioUtils.CreateSound(AudioBundle.LoadAsset<AudioClip>("Into-the-Aether"), AudioUtils.StandardSoundModes_Stream);
+            var sound = AudioUtils.CreateSound(TitleBundle.LoadAsset<AudioClip>("into-the-aether"), AudioUtils.StandardSoundModes_Stream);
 
             CustomSoundHandler.RegisterCustomSound(soundId, sound, AudioUtils.BusPaths.Music);
 
@@ -215,7 +235,7 @@ namespace AV
 
         GameObject SpawnObject()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("Aether");
+            var prefab = TitleBundle.LoadAsset<GameObject>("aether");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(-7, 5.5f, 25);
@@ -244,42 +264,16 @@ namespace AV
             var rend = obj.GetComponentInChildren<Renderer>();
 
             var src = obj.GetComponent<AudioSource>() ?? obj.AddComponent<AudioSource>();
-            src.clip = AudioBundle.LoadAsset<AudioClip>("Into-the-Aether");
+            src.clip = TitleBundle.LoadAsset<AudioClip>("into-the-aether");
             src.loop = false;
             src.playOnAwake = true;
-            src.volume = 0.1f;
-
-            var mixer = AudioBundle.LoadAsset<UnityEngine.Audio.AudioMixer>("assets/test scripts/mutedmixer.mixer");
-            if (mixer != null)
-            {
-                var groups = mixer.FindMatchingGroups("");
-                AudioMixerGroup group = groups.Length > 0 ? groups[0] : null;
-
-                if (group != null)
-                {
-                    src.outputAudioMixerGroup = group;
-
-                    bool paramExists = group.audioMixer.GetFloat("VisualizerVolume", out _);
-                    if (paramExists)
-                        group.audioMixer.SetFloat("VisualizerVolume", -80f);
-                    else
-                        UnityEngine.Debug.LogWarning("VisualizerVolume parameter not found in mixer. Audio will be audible.");
-                }
-                else
-                {
-                    UnityEngine.Debug.LogError("No groups found in mixer!");
-                }
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("Mixer not loaded!");
-            }
+            src.volume = 0.05f;
 
             var changer = obj.AddComponent<AudioTwoColorChanger>();
             changer.targetRenderer = rend;
             changer.quietColor = Color.magenta;
             changer.loudColor = Color.cyan;
-            changer.sensitivity = 5500f;
+            changer.sensitivity = 11000f;
             changer.smoothSpeed = 15f;
 
             return obj;
@@ -287,7 +281,7 @@ namespace AV
 
         GameObject SpawnObject1()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("Void");
+            var prefab = TitleBundle.LoadAsset<GameObject>("void");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(14, 0f, 25);
@@ -316,42 +310,16 @@ namespace AV
             var rend = obj.GetComponentInChildren<Renderer>();
 
             var src = obj.GetComponent<AudioSource>() ?? obj.AddComponent<AudioSource>();
-            src.clip = AudioBundle.LoadAsset<AudioClip>("Into-the-Aether");
+            src.clip = TitleBundle.LoadAsset<AudioClip>("into-the-aether");
             src.loop = false;
             src.playOnAwake = true;
-            src.volume = 0.1f;
-
-            var mixer = AudioBundle.LoadAsset<UnityEngine.Audio.AudioMixer>("assets/test scripts/mutedmixer.mixer");
-            if (mixer != null)
-            {
-                var groups = mixer.FindMatchingGroups("");
-                AudioMixerGroup group = groups.Length > 0 ? groups[0] : null;
-
-                if (group != null)
-                {
-                    src.outputAudioMixerGroup = group;
-
-                    bool paramExists = group.audioMixer.GetFloat("VisualizerVolume", out _);
-                    if (paramExists)
-                        group.audioMixer.SetFloat("VisualizerVolume", -80f);
-                    else
-                        UnityEngine.Debug.LogWarning("VisualizerVolume parameter not found in mixer. Audio will be audible.");
-                }
-                else
-                {
-                    UnityEngine.Debug.LogError("No groups found in mixer!");
-                }
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("Mixer not loaded!");
-            }
+            src.volume = 0.05f;
 
             var changer = obj.AddComponent<AudioTwoColorChanger>();
             changer.targetRenderer = rend;
             changer.quietColor = Color.cyan;
             changer.loudColor = Color.magenta;
-            changer.sensitivity = 5500f;
+            changer.sensitivity = 11000f;
             changer.smoothSpeed = 15f;
 
             return obj;
@@ -360,7 +328,7 @@ namespace AV
 
         GameObject SpawnObject2()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("thankyoulist");
+            var prefab = TitleBundle.LoadAsset<GameObject>("thankyoulist");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(-17, 7f, 20);
@@ -385,7 +353,7 @@ namespace AV
 
         GameObject SpawnObject3()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("goober");
+            var prefab = TitleBundle.LoadAsset<GameObject>("goober");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(-8, -1f, 5f);
@@ -410,7 +378,7 @@ namespace AV
 
         GameObject SpawnObject4()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("plane");
+            var prefab = TitleBundle.LoadAsset<GameObject>("plane");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(-5, -1f, 10);
@@ -428,7 +396,7 @@ namespace AV
 
             MaterialUtils.ApplySNShaders(obj);
 
-            Texture2D myTexture = MeshBundle.LoadAsset<Texture2D>("Screenshot 2025-08-09 205356");
+            Texture2D myTexture = TitleBundle.LoadAsset<Texture2D>("screenshot 2025-08-09 205356");
 
             if (myTexture != null)
             {
@@ -455,7 +423,7 @@ namespace AV
 
         GameObject SpawnObject5()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("yippe");
+            var prefab = TitleBundle.LoadAsset<GameObject>("yippe");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(10, 3f, 15);
@@ -480,7 +448,7 @@ namespace AV
 
         GameObject SpawnObject6()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("Crystal (isuckok;_;)");
+            var prefab = TitleBundle.LoadAsset<GameObject>("crystal (isuckok;_;)");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(-15, -5f, 70);
@@ -505,7 +473,7 @@ namespace AV
 
         GameObject SpawnObject7()
         {
-            var prefab = MeshBundle.LoadAsset<GameObject>("Crystal (isuckok;_;)");
+            var prefab = TitleBundle.LoadAsset<GameObject>("crystal (isuckok;_;)");
             var obj = GameObject.Instantiate(prefab);
 
             obj.transform.position = new Vector3(17, -5f, 70);
