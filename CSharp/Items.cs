@@ -1,5 +1,7 @@
+using ArchitectsLibrary.Handlers;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
+using Nautilus.Assets.PrefabTemplates;
 using Nautilus.Crafting;
 using Nautilus.FMod;
 using Nautilus.FMod.Interfaces;
@@ -8,7 +10,10 @@ using Nautilus.Utility;
 using Story;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using static GameObjectPoolPrefabMap;
+using static UWE.FreezeTime;
 using Plugin = AV.Plugin;
 
 namespace Violet.AV
@@ -17,7 +22,7 @@ namespace Violet.AV
     {
         public static TechType IonPolymer;
         public static TechType Cloudnite;
-
+        public static PrefabInfo prefabInfo { get; private set; }
 
         public static void Registeritem1()
         {
@@ -48,7 +53,7 @@ namespace Violet.AV
 
             if (bundle == null)
             {
-                Debug.LogError("ItemMeshBundle is not loaded!");
+                Plugin.Log.LogError("ItemMeshBundle is not loaded!");
                 return;
             }
 
@@ -188,7 +193,7 @@ namespace Violet.AV
 
             if (bundle == null)
             {
-                Debug.LogError("ItemMeshBundle is not loaded!");
+                Plugin.Log.LogError("ItemMeshBundle is not loaded!");
                 return;
             }
 
@@ -236,16 +241,10 @@ namespace Violet.AV
                     new Ingredient(TechType.FiberMesh, 1)
 
                 }
-                
-
             };
 
             prefab.SetRecipe(IonPolymerRecipe);
             
-
-
-
-
             CraftTreeHandler.AddCraftingNode(
                 CraftTree.Type.Workbench,
                 
@@ -302,5 +301,81 @@ namespace Violet.AV
 
             Plugin.Log.LogInfo("Ion Polymer registered");
         }
+        public static void Registerprecursorkey()
+        {
+            //I didnt make this code below indigocoder did i only yoinked it because i was lazy + i didnt know how to edit the tablets
+            // sooo all credits go to indigocoder for this below.
+
+            var  prefabInfo = PrefabInfo.WithTechType("AetherVoidPrecursorKey", true, null)
+                .WithIcon(Plugin.TextureBundle.LoadAsset<Sprite>("IonPolymerIcon"));
+
+            var prefab = new CustomPrefab(prefabInfo);
+            var cloneTemplate = new CloneTemplate(prefabInfo, TechType.PrecursorKey_Purple);
+            cloneTemplate.ModifyPrefab += gameObject =>
+            {
+                Texture2D replacementGlyph = Plugin.TextureBundle.LoadAsset<Texture2D>("AetherVoidGlyph");
+                var rend1 = gameObject.transform.Find("Model/Rig_J/precursor_key_C_02_symbol_05").GetComponent<Renderer>();
+                var rend2 = gameObject.transform.Find("ViewModel/Rig_J/precursor_key_C_02_symbol_05").GetComponent<Renderer>();
+
+                var tempMats = rend1.materials;
+                tempMats[1].SetTexture("_MainTex", replacementGlyph);
+                tempMats[1].SetTexture("_SpecTex", replacementGlyph);
+                tempMats[1].SetTexture("_Illum", replacementGlyph);
+                rend1.materials = tempMats;
+
+                tempMats = rend2.materials;
+                tempMats[1].SetTexture("_MainTex", replacementGlyph);
+                tempMats[1].SetTexture("_SpecTex", replacementGlyph);
+                tempMats[1].SetTexture("_Illum", replacementGlyph);
+                rend2.materials = tempMats;
+
+                gameObject.GetComponent<Collider>().isTrigger = false;
+
+                
+            };
+
+            prefab.SetGameObject(cloneTemplate);
+
+            var AetherVoidFacilitykey = new RecipeData()
+            {
+                craftAmount = 1,
+                Ingredients = new List<Ingredient>
+                {
+                    new Ingredient(TechType.PrecursorIonCrystal, 1),
+                    new Ingredient(IonPolymer, 1),
+                    new Ingredient(AUHandler.CobaltTechType, 2)
+
+                }
+            };
+            prefab.SetRecipe(AetherVoidFacilitykey);
+
+            CraftTreeHandler.AddCraftingNode(
+                CraftTree.Type.Workbench,
+
+
+                prefabInfo.TechType
+                );
+                
+            
+
+            var scanning = new ScanningGadget(prefab, TechType.None, 1)
+                .WithScannerEntry(blueprint: prefabInfo.TechType,
+                scanTime: 5f,
+                isFragment: true,
+                null,
+                destroyAfterScan: false);
+
+            var TabletSpawn = new Vector3(-248.6f, -453.5f, 1567.0f);
+            var TabletSpawnRotation = new Vector3(0f,0f,0f);
+            var TabletSpawnSize = new Vector3(1f,1f,1f);
+
+           
+            prefab.Register();
+
+            SpawnLocation spawn = new SpawnLocation(TabletSpawn, TabletSpawnRotation, TabletSpawnSize);
+            CoordinatedSpawnsHandler.RegisterCoordinatedSpawnsForOneTechType(prefabInfo.TechType, spawn);
+
+        }
+
     }
 }
