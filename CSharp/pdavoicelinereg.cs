@@ -11,7 +11,8 @@ namespace Violet.AV
     {
         public class AetherVoidBiomePDA
         {
-
+            public static bool isdoneregistering = false;
+            public static FMODAsset Ionpolymerwarningvoiceline = null;
             public static void Register()
             {
                 Sprite mySprite = Plugin.TextureBundle.LoadAsset<Sprite>("Gooberman");
@@ -55,9 +56,22 @@ namespace Violet.AV
 
                 eventBuilder3.Register();
 
+                IFModSoundBuilder eventBuilder4 = builder.CreateNewEvent(
+                    "IonPolymerfacilitykey",
+                    "bus:/master/SFX_for_pause"
+                );
+
+                eventBuilder4.SetSound("IonPolymerfacilitykey")
+                    .SetFadeDuration(0.5f)
+                    .SetMode2D(false);
+
+                eventBuilder4.Register();
+
+
+
                 var fmodAssetGooberman = Nautilus.Utility.AudioUtils.GetFmodAsset("Finaly a voice actor");
 
-
+                Ionpolymerwarningvoiceline = Nautilus.Utility.AudioUtils.GetFmodAsset("IonPolymerfacilitykey");
 
 
                 PDAHandler.AddLogEntry(
@@ -116,11 +130,11 @@ namespace Violet.AV
                 "AetherVoidSurfaceData",
                 Story.GoalType.Encyclopedia,
                 biomeName: "AetherVoidsurface",
-                minStayDuration: 3f,
-                delay: 9f
-);
+                minStayDuration: 1f,
+                delay: 0f
+                );
 
-
+                isdoneregistering = true;
 
             }
         }
