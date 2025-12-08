@@ -1,3 +1,4 @@
+
 using Nautilus.Handlers;
 using Nautilus.Utility;
 using UnityEngine;
@@ -7,9 +8,11 @@ namespace Violet.AV
 {
     public static class Biomereg
     {
+        public static bool hasregisteredbiome1 = false;
+        public static bool hasregisteredbiome2 = false;
         public static void RegisterCustomBiome()
         {
-            
+
             var biomeSettings = BiomeUtils.CreateBiomeSettings(
                 new Vector3(100f, 18.3f, 3.53f), // absorption
                 1f,                              // scattering
@@ -20,7 +23,7 @@ namespace Violet.AV
                 25f,                             // startDistance
                 1f,                              // sunlightScale
                 1f,                              // ambientScale
-                24f                              
+                24f
             );
 
             var skyReference = new BiomeHandler.SkyReference("SkyGrandReef");
@@ -32,6 +35,7 @@ namespace Violet.AV
             var fmodAsset = ScriptableObject.CreateInstance<FMODAsset>();
             fmodAsset.path = "event:/env/background/grandreef_background";
             BiomeHandler.AddBiomeAmbience("AetherVoidsurface", fmodAsset, FMODGameParams.InteriorState.Always);
+            hasregisteredbiome1 = true;
         }
 
         public static void RegisterCustomBiome2()
@@ -60,36 +64,7 @@ namespace Violet.AV
             fmodAsset.path = "event:/env/background/grandreef_background";
             BiomeHandler.AddBiomeAmbience("AetherVoid", fmodAsset, FMODGameParams.InteriorState.Always);
 
-
-        }
-
-        public static void RegisterCustomBiome3()
-        {
-            var biomeSettings = BiomeUtils.CreateBiomeSettings(
-                new Vector3(100f, 18.3f, 3.53f), // absorption
-                1f,                              // scattering
-                Color.white,                     // scatteringColor
-                1f,                              // murkiness
-                Color.green,                     // emissive
-                1f,                              // emissiveScale
-                25f,                             // startDistance
-                1f,                              // sunlightScale
-                1f,                              // ambientScale
-                15f                              // temperature
-            );
-
-            var skyReference = new BiomeHandler.SkyReference("SkyPrecursorPrisonAquarium");
-
-            BiomeHandler.RegisterBiome("PrecursorFacilityIonPolymer", biomeSettings, skyReference);
-            Plugin.Log.LogMessage("Registerd Precursor Facility Ion Polymer");
-
-
-
-            var fmodAsset = ScriptableObject.CreateInstance<FMODAsset>();
-            fmodAsset.path = "event:/env/background/grandreef_background";
-            BiomeHandler.AddBiomeAmbience("AetherVoid", fmodAsset, FMODGameParams.InteriorState.Always);
-
-
+            hasregisteredbiome2 = true;
         }
     }
-  }
+}
