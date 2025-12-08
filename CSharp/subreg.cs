@@ -15,9 +15,11 @@ namespace Violet.AV
 {
     internal static class subreg
     {
+        public static bool hasregisted = false;
+
         public static IEnumerator RegisterSubmarine()
         {
-            var model = Plugin.SubBundle.LoadAsset<GameObject>("place holder vehicle");
+            var model = Plugin.SubBundle.LoadAsset<GameObject>("place holder vehicle2");
             model.SetActive(false);
 
             var prefab = GameObject.Instantiate(model);
@@ -32,8 +34,8 @@ namespace Violet.AV
                 Debug.LogWarning("[Sub Registration] Skipped shader application due to missing renderer: " + ex.Message);
             }
 
-            yield return CyclopsReferenceHandler.EnsureCyclopsReference();
-            yield return InterfaceCallerHandler.InvokeCyclopsReferencers(prefab);
+            //yield return CyclopsReferenceHandler.EnsureCyclopsReference();
+            //yield return InterfaceCallerHandler.InvokeCyclopsReferencers(prefab);
 
             foreach (var modifier in prefab.GetComponentsInChildren<PrefabModifier>(true))
             {
@@ -72,6 +74,8 @@ namespace Violet.AV
             customSub.SetGameObject(prefab);
 
             customSub.Register();
+            hasregisted = true;
         }
     }
 }
+
