@@ -365,12 +365,46 @@ namespace Violet.AV
                 null,
                 destroyAfterScan: false);
 
-            var TabletSpawn = new Vector3(-248.6f, -453.5f, 1567.0f);
+            var TabletSpawn = new Vector3(-248.6f, -448.5f, 1567.0f);
             var TabletSpawnRotation = new Vector3(0f,0f,0f);
             var TabletSpawnSize = new Vector3(1f,1f,1f);
 
            
             prefab.Register();
+
+            StoryGoalHandler.RegisterItemGoal("FacilityKeyIsPickedUp", Story.GoalType.Story, prefabInfo.TechType, 0);
+
+            StoryGoalHandler.RegisterCustomEvent("FacilityKeyIsPickedUp", () =>
+            {
+                GameObject Facilityforcefieldobj = GameObject.Find("ForceField_TRANSPARENT").gameObject;
+                GameObject Facility = GameObject.Find("FacilityLights").gameObject;
+                
+                if (Facility != null)
+                {
+                    
+                    var lights = Facility.GetComponentsInChildren<Light>(true);
+                    foreach (var light in lights)
+                    {
+                        light.enabled = true;
+                    }
+
+
+                }
+
+                if (Facilityforcefieldobj == null)
+                {
+                    Plugin.Log.LogError($"No Facilityforcefieldobj not found.");
+                }
+                else if (Facilityforcefieldobj != null && Facilityforcefieldobj.name == "ForceField_TRANSPARENT")
+                {
+                    var rend = Facilityforcefieldobj.GetComponent<MeshRenderer>();
+                    var Collider = Facilityforcefieldobj.GetComponent<BoxCollider>();
+
+                    rend.enabled = false;
+                    Collider.enabled = false;
+                }
+
+            });
 
             SpawnLocation spawn = new SpawnLocation(TabletSpawn, TabletSpawnRotation, TabletSpawnSize);
             CoordinatedSpawnsHandler.RegisterCoordinatedSpawnsForOneTechType(prefabInfo.TechType, spawn);
