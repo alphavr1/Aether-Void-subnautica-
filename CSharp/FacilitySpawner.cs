@@ -9,6 +9,8 @@ namespace Violet.AV
 {
     internal static class FacilitySpawner
     {
+        public static GameObject AetherVoidObject = null;
+
         public static void Patch()
         {
             ConsoleCommandsHandler.AddGotoTeleportPosition("pbp", new Vector3(-161f, -394f, 1186f));
@@ -27,22 +29,22 @@ namespace Violet.AV
                 return;
             }
 
-            var facilityObj = bundle.LoadAsset<GameObject>("precursorfacilitypolymer");
-            if (facilityObj == null)
+            var FacilityObj = bundle.LoadAsset<GameObject>("precursorfacilitypolymer");
+            if (FacilityObj == null)
             {
                 Plugin.Log.LogError("Failed to find 'PrecursorFacilityPrefab' in AssetBundle.");
                 return;
             }
             PrefabUtils.AddBasicComponents(
-                facilityObj,
+                FacilityObj,
                 info.ClassID,
                 info.TechType,
                 LargeWorldEntity.CellLevel.Global
             );
 
-            MaterialUtils.ApplySNShaders(facilityObj);
+            
 
-            prefab.SetGameObject(facilityObj);
+                prefab.SetGameObject(FacilityObj);
 
             prefab.SetSpawns(new SpawnLocation(
                 new Vector3(-158f, -385f, 1190f),
@@ -51,6 +53,8 @@ namespace Violet.AV
             ));
 
             ConsoleCommandsHandler.AddGotoTeleportPosition("PrecursorIonPolymerFacility", new Vector3(-161f, -394f, 1186f));
+
+            
 
             prefab.Register();
 
