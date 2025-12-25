@@ -69,36 +69,15 @@ namespace Violet.AV
             ConsoleCommandsHandler.AddGotoTeleportPosition("AetherVoidsurface", new Vector3(1311.1f, -50f, -1361f));
             ConsoleCommandsHandler.AddGotoTeleportPosition("AetherVoid", new Vector3(1311.1f, -1500f, -1361f));
 
-            
+
 
 
         }
 
         public void SpawnBiomeVolume2()
         {
-            PrefabInfo volumePrefabInfo = PrefabInfo.WithTechType("AetherVoidCubeVolume");
-            CustomPrefab volumePrefab = new CustomPrefab(volumePrefabInfo);
-
-            AtmosphereVolumeTemplate volumeTemplate = new AtmosphereVolumeTemplate(
-                volumePrefabInfo,
-                AtmosphereVolumeTemplate.VolumeShape.Cube,
-                "AetherVoid"
-            );
-
-            volumePrefab.SetGameObject(volumeTemplate);
-            volumePrefab.Register();
-
-            CoordinatedSpawnsHandler.RegisterCoordinatedSpawn(
-                new SpawnInfo(volumePrefabInfo.ClassID,
-                              new Vector3(1311.1f, -1500f, -1361f),
-                              Quaternion.identity,
-                              new Vector3(500f, 500f, 500f))
-            );
-
-            
-
+            Plugin.Log.LogInfo("AetherVoidBiome Spawner: This has been replaced via thunderkit and the main biome is now in the aethervoid prefab.");
         }
-
     }
 }
 
