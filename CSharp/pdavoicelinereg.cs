@@ -11,6 +11,7 @@ namespace Violet.AV
     {
         public class AetherVoidBiomePDA
         {
+            public static FMODAsset placeholdervoiceline;
             public static bool isdoneregistering = false;
             public static FMODAsset Ionpolymerwarningvoiceline = null;
             public static void Register()
@@ -70,6 +71,7 @@ namespace Violet.AV
 
 
                 var fmodAssetGooberman = Nautilus.Utility.AudioUtils.GetFmodAsset("Finaly a voice actor");
+                placeholdervoiceline = fmodAssetplaceholder;
 
                 Ionpolymerwarningvoiceline = Nautilus.Utility.AudioUtils.GetFmodAsset("IonPolymerfacilitykey");
 
