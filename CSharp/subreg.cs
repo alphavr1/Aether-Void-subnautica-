@@ -24,7 +24,7 @@ namespace Violet.AV
 
             var prefab = GameObject.Instantiate(model);
 
-            yield return new WaitUntil(() => MaterialUtils.IsReady);
+            
             try
             {
                 MaterialUtils.ApplySNShaders(prefab);
@@ -74,7 +74,9 @@ namespace Violet.AV
             customSub.SetGameObject(prefab);
 
             customSub.Register();
+
             hasregisted = true;
+            yield return customSub;
         }
     }
 }
